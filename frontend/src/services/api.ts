@@ -1,8 +1,10 @@
 import axios, { type AxiosResponse } from 'axios';
 import type {
   Customer,
+  InactiveCustomerSearchResult,
+  ProductListItem,
   RouteEntry,
-  BulkLogItem,
+  BulkSubmitPayload,
   CreateCustomerPayload,
   CreatePaymentPayload,
 } from '../types';
@@ -37,6 +39,32 @@ export const createCustomer = (
   payload: CreateCustomerPayload,
 ): Promise<AxiosResponse<Customer>> => api.post<Customer>('/customers', payload);
 
+/**
+ * Search for inactive (soft-deleted) customers by phone number fragment.
+ *
+ * Targets:  GET /api/customers/search?phone=<query>
+ * Backend:  SELECTs { id, name, phone } WHERE is_active = FALSE AND phone LIKE '%query%' LIMIT 5
+ *
+ * @param phone  Partial or full phone number string to match against.
+ *               The backend wraps it in SQL wildcards; pass the raw digits only.
+ */
+export const searchInactiveCustomers = (
+  phone: string,
+): Promise<AxiosResponse<InactiveCustomerSearchResult[]>> =>
+  api.get<InactiveCustomerSearchResult[]>('/customers/search', {
+    params: { phone },
+  });
+
+// ─── Product endpoints ───────────────────────────────────────────────────────
+
+/**
+ * Fetch all active products.
+ * Returns a slim projection: { product_id, name, current_price }[]
+ * Backend query: SELECT id AS product_id, name, current_price FROM Products WHERE is_active = TRUE
+ */
+export const getProducts = (): Promise<AxiosResponse<ProductListItem[]>> =>
+  api.get<ProductListItem[]>('/products');
+
 // ─── Daily Route endpoints ────────────────────────────────────────────────────
 
 /**
@@ -50,12 +78,17 @@ export const getRoute = (
 
 /**
  * Bulk-submit the confirmed route for a shift.
- * Sends an array of BulkLogItem objects; backend calculates total_charge.
+ *
+ * Accepts a BulkSubmitPayload envelope:
+ *   { sync_id: string (UUID), logs: BulkLogItem[] }
+ *
+ * `sync_id` lets the backend treat replayed payloads idempotently —
+ * a UUID collision means "already processed; skip".
  */
 export const bulkSubmitLogs = (
-  logs: BulkLogItem[],
+  payload: BulkSubmitPayload,
 ): Promise<AxiosResponse<{ inserted: number }>> =>
-  api.post<{ inserted: number }>('/logs/bulk', logs);
+  api.post<{ inserted: number }>('/logs/bulk', payload);
 
 // ─── Payment endpoints ────────────────────────────────────────────────────────
 

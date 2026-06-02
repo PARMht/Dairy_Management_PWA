@@ -10,6 +10,7 @@ exports.getRoute = async (req, res) => {
   try {
     // Spec: Joins Subscriptions and Customers tables to return array of customers 
     // assigned to requested shift, including default_qty and current_price.
+    // Explicitly ensure both the customer and the product are active.
     const [rows] = await pool.query(`
       SELECT 
         c.id AS customer_id,
@@ -23,7 +24,7 @@ exports.getRoute = async (req, res) => {
       FROM Customers c
       JOIN Subscriptions s ON c.id = s.customer_id
       JOIN Products p ON s.product_id = p.id
-      WHERE s.shift = ? AND c.is_subscriber = TRUE
+      WHERE s.shift = ? AND c.is_subscriber = TRUE AND c.is_active = TRUE AND p.is_active = TRUE
     `, [shift]);
     
     res.json(rows);

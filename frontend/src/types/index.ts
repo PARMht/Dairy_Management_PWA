@@ -16,22 +16,49 @@ export type PaymentMethod = 'Cash' | 'UPI' | 'Other';
 /**
  * A row from the `Customers` table as returned by GET /api/customers.
  * `is_subscriber` drives which extra fields are present on the related records.
+ * `is_active` reflects the v2.0 soft-delete flag (schema: DEFAULT TRUE).
  */
 export interface Customer {
   customer_id: number;
   name: string;
   phone: string;
   is_subscriber: boolean;
-  created_at: string; // ISO-8601 datetime string from MySQL
+  is_active: boolean;   // soft-delete flag — FALSE means the customer is deactivated
+  created_at: string;  // ISO-8601 datetime string from MySQL
+}
+
+/**
+ * Slim projection returned by GET /api/customers/search?phone=<query>.
+ * The backend SELECTs only { id, name, phone } from inactive rows (is_active = FALSE).
+ * Note: the column is `id` in this response, not `customer_id`, mirroring the raw SQL.
+ */
+export interface InactiveCustomerSearchResult {
+  id: number;
+  name: string;
+  phone: string;
 }
 
 // ─── Product ──────────────────────────────────────────────────────────────────
 
-/** Minimal product data embedded inside other responses. */
+/**
+ * Minimal product data embedded inside other responses.
+ * `is_active` reflects the v2.0 soft-delete flag (schema: DEFAULT TRUE).
+ */
 export interface Product {
   product_id: number;
   name: string;
   price_per_unit: number;
+  is_active: boolean;  // soft-delete flag — FALSE means the product is retired
+}
+
+/**
+ * Slim projection returned by GET /api/products.
+ * Backend query: SELECT id AS product_id, name, current_price FROM Products WHERE is_active = TRUE
+ */
+export interface ProductListItem {
+  product_id: number;
+  name: string;
+  current_price: number;
 }
 
 // ─── Subscription ─────────────────────────────────────────────────────────────
@@ -77,6 +104,19 @@ export interface BulkLogItem {
   quantity: number;
   shift: Shift;
   recorded_price: number;
+}
+
+/**
+ * Full payload sent to POST /api/logs/bulk (online) or persisted to
+ * IndexedDB via localforage (offline).
+ *
+ * `sync_id` is a client-generated UUID (crypto.randomUUID()) used by the
+ * backend as an idempotency key — if the PWA replays the same payload after
+ * reconnecting, the server can detect and safely skip the duplicate insert.
+ */
+export interface BulkSubmitPayload {
+  sync_id: string;
+  logs: BulkLogItem[];
 }
 
 // ─── Payments ─────────────────────────────────────────────────────────────────

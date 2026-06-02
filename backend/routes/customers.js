@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const customerController = require('../controllers/customerController');
 
-// GET  /api/customers?is_subscriber=true|false
-router.get('/', customerController.getCustomers);
+// 1. Search endpoint (Placed at the top to prevent shadowing)
+router.get('/search', customerController.searchInactiveCustomers);
 
-// POST /api/customers
+// 2. Base collection routes
+router.get('/', customerController.getCustomers);
 router.post('/', customerController.createCustomer);
 
 module.exports = router;

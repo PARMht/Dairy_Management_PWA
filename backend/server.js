@@ -7,6 +7,7 @@ const customerRoutes = require('./routes/customers');
 const routeRoutes    = require('./routes/route');
 const logRoutes      = require('./routes/logs');
 const paymentRoutes  = require('./routes/payments');
+const productRoutes  = require('./routes/products');
 
 // ── App init ─────────────────────────────────────────────────
 const app = express();
@@ -32,6 +33,7 @@ app.use('/api/customers', customerRoutes);
 app.use('/api/route',     routeRoutes);
 app.use('/api/logs',      logRoutes);
 app.use('/api/payments',  paymentRoutes);
+app.use('/api/products',  productRoutes);
 
 // ── Global error handler ─────────────────────────────────────
 app.use((err, _req, res, _next) => {
