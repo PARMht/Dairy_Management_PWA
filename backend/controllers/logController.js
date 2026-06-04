@@ -1,19 +1,6 @@
 const pool = require('../config/db');
 
-// Ensure Idempotency table exists for sync idempotency
-pool.query(`
-  CREATE TABLE IF NOT EXISTS Idempotency_Keys (
-    sync_id VARCHAR(255) PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  )
-`).catch(err => console.error('Failed to ensure Idempotency_Keys table:', err));
-
-const getISTDateString = () => {
-  const now = new Date();
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const ist = new Date(utc + (3600000 * 5.5));
-  return ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
-};
+const { getISTDateString } = require('../utils/ist');
 
 exports.bulkCreateLogs = async (req, res) => {
   const { sync_id, logs } = req.body; // Expects sync_id and logs array
@@ -74,5 +61,79 @@ exports.bulkCreateLogs = async (req, res) => {
     res.status(500).json({ error: 'Failed to create bulk logs: ' + error.message });
   } finally {
     connection.release();
+  }
+};
+
+exports.getLogHistory = async (req, res) => {
+  const { page = 1, limit = 20, customer_id, from, to } = req.query;
+  const parsedPage = parseInt(page, 10) > 0 ? parseInt(page, 10) : 1;
+  const parsedLimit = parseInt(limit, 10) > 0 ? parseInt(limit, 10) : 20;
+  const offset = (parsedPage - 1) * parsedLimit;
+
+  let queryParams = [];
+  let whereClauses = [];
+
+  if (customer_id) {
+    whereClauses.push('dl.customer_id = ?');
+    queryParams.push(customer_id);
+  }
+  if (from) {
+    whereClauses.push('dl.log_date >= ?');
+    queryParams.push(from);
+  }
+  if (to) {
+    whereClauses.push('dl.log_date <= ?');
+    queryParams.push(to);
+  }
+
+  const whereString = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+  try {
+    const [countRows] = await pool.query(`SELECT COUNT(*) as total FROM Daily_Logs dl ${whereString}`, queryParams);
+    const total = countRows[0].total;
+
+    const query = `
+      SELECT dl.*, c.name AS customer_name, p.name AS product_name 
+      FROM Daily_Logs dl 
+      JOIN Customers c ON dl.customer_id = c.id 
+      JOIN Products p ON dl.product_id = p.id
+      ${whereString}
+      ORDER BY log_date DESC, created_at DESC
+      LIMIT ? OFFSET ?
+    `;
+    const [logs] = await pool.query(query, [...queryParams, parsedLimit, offset]);
+
+    res.json({ logs, total, page: parsedPage, limit: parsedLimit });
+  } catch (error) {
+    console.error('Error fetching log history:', error);
+    res.status(500).json({ error: 'Failed to fetch log history' });
+  }
+};
+
+exports.updateLog = async (req, res) => {
+  const { id } = req.params;
+  const { quantity, recorded_price } = req.body;
+
+  try {
+    const [existingRows] = await pool.query('SELECT quantity, recorded_price FROM Daily_Logs WHERE id = ?', [id]);
+    
+    if (existingRows.length === 0) {
+      return res.status(404).json({ error: 'Log not found' });
+    }
+
+    const currentLog = existingRows[0];
+    const newQuantity = quantity !== undefined ? parseFloat(quantity) : currentLog.quantity;
+    const newPrice = recorded_price !== undefined ? parseFloat(recorded_price) : currentLog.recorded_price;
+    const newTotal = newQuantity * newPrice;
+
+    await pool.query(
+      'UPDATE Daily_Logs SET quantity = ?, recorded_price = ?, total_charge = ? WHERE id = ?',
+      [newQuantity, newPrice, newTotal, id]
+    );
+
+    res.json({ message: 'Log updated', total_charge: newTotal });
+  } catch (error) {
+    console.error('Error updating log:', error);
+    res.status(500).json({ error: 'Failed to update log' });
   }
 };

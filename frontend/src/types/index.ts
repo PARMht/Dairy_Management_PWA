@@ -165,3 +165,93 @@ export interface ApiErrorBody {
   message: string;
   error?: string;
 }
+
+// ─── Customer Balance (from v_customer_balance view) ─────────────────────────
+export interface CustomerBalance {
+  customer_id: number;
+  customer_name: string;
+  phone: string;
+  total_billed: number;
+  total_paid: number;
+  pending_amount: number;
+}
+
+// ─── Payment Record ──────────────────────────────────────────────────────────
+export interface PaymentRecord {
+  id: number;
+  customer_id: number;
+  amount: number;
+  method: string;
+  notes: string | null;
+  payment_date: string;
+  created_at: string;
+}
+
+// ─── Log History ─────────────────────────────────────────────────────────────
+export interface LogHistoryEntry {
+  id: number;
+  customer_id: number;
+  customer_name: string;
+  product_id: number;
+  product_name: string;
+  quantity: number;
+  shift: Shift | null;
+  recorded_price: number;
+  total_charge: number;
+  log_date: string;
+  created_at: string;
+}
+
+export interface LogHistoryResponse {
+  logs: LogHistoryEntry[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+// ─── Monthly Billing ─────────────────────────────────────────────────────────
+export interface MonthlyBillEntry {
+  customer_id: number;
+  customer_name: string;
+  phone: string;
+  bill_month: string;
+  delivery_count: number;
+  total_billed: number;
+  total_paid: number;
+  pending_amount: number;
+}
+
+export interface MonthlyBillResponse {
+  month: string;
+  customers: MonthlyBillEntry[];
+  grand_total_billed: number;
+  grand_total_paid: number;
+  grand_total_pending: number;
+}
+
+// ─── Product management payloads ─────────────────────────────────────────────
+export interface CreateProductPayload {
+  name: string;
+  unit?: string;
+  current_price: number;
+}
+
+export interface UpdateProductPayload {
+  name?: string;
+  unit?: string;
+  current_price?: number;
+}
+
+// ─── Subscription management payloads ────────────────────────────────────────
+export interface ToggleSubscriberPayload {
+  is_subscriber: boolean;
+  product_id?: number;
+  shift?: Shift;
+  default_qty?: number;
+}
+
+export interface UpdateSubscriptionPayload {
+  product_id?: number;
+  shift?: Shift;
+  default_qty?: number;
+}

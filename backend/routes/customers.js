@@ -9,4 +9,9 @@ router.get('/search', customerController.searchInactiveCustomers);
 router.get('/', customerController.getCustomers);
 router.post('/', customerController.createCustomer);
 
+// 3. Customer management routes
+router.delete('/:id', customerController.deactivateCustomer);
+router.patch('/:id/toggle', customerController.toggleSubscriberStatus);
+router.patch('/:id/subscription', customerController.updateSubscription);
+
 module.exports = router;

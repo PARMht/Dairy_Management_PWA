@@ -1,11 +1,6 @@
 const pool = require('../config/db');
 
-const getISTDateString = () => {
-  const now = new Date();
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const ist = new Date(utc + (3600000 * 5.5));
-  return ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
-};
+const { getISTDateString } = require('../utils/ist');
 
 exports.getCustomers = async (req, res) => {
   try {
@@ -115,5 +110,106 @@ exports.createCustomer = async (req, res) => {
   } finally {
     // Always release the connection back to the pool
     connection.release();
+  }
+};
+
+exports.deactivateCustomer = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [result] = await pool.query(
+      'UPDATE Customers SET is_active = FALSE WHERE id = ? AND is_active = TRUE',
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Customer not found or already inactive' });
+    }
+
+    res.json({ message: 'Customer deactivated' });
+  } catch (error) {
+    console.error('Error deactivating customer:', error);
+    res.status(500).json({ error: 'Failed to deactivate customer' });
+  }
+};
+
+exports.toggleSubscriberStatus = async (req, res) => {
+  const { id } = req.params;
+  const { is_subscriber, product_id, shift, default_qty } = req.body;
+  const isSub = is_subscriber === true || is_subscriber === 'true';
+
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    const [existing] = await connection.query('SELECT id, is_active FROM Customers WHERE id = ? FOR UPDATE', [id]);
+    if (existing.length === 0 || !existing[0].is_active) {
+      await connection.rollback();
+      return res.status(404).json({ error: 'Customer not found or not active' });
+    }
+
+    await connection.query('UPDATE Customers SET is_subscriber = ? WHERE id = ?', [isSub, id]);
+
+    if (isSub) {
+      await connection.query('DELETE FROM Subscriptions WHERE customer_id = ?', [id]);
+      await connection.query(
+        'INSERT INTO Subscriptions (customer_id, product_id, shift, default_qty) VALUES (?, ?, ?, ?)',
+        [id, product_id, shift, default_qty]
+      );
+    } else {
+      await connection.query('DELETE FROM Subscriptions WHERE customer_id = ?', [id]);
+    }
+
+    await connection.commit();
+    res.json({ message: 'Customer updated' });
+  } catch (error) {
+    await connection.rollback();
+    console.error('Error toggling subscriber status:', error);
+    res.status(500).json({ error: 'Failed to update customer status: ' + error.message });
+  } finally {
+    connection.release();
+  }
+};
+
+exports.updateSubscription = async (req, res) => {
+  const { id } = req.params; // customer_id
+  const { product_id, shift, default_qty } = req.body;
+
+  if (product_id === undefined && shift === undefined && default_qty === undefined) {
+    return res.status(400).json({ error: 'No fields provided to update' });
+  }
+
+  const updates = [];
+  const values = [];
+
+  if (product_id !== undefined) {
+    updates.push('product_id = ?');
+    values.push(product_id);
+  }
+  if (shift !== undefined) {
+    updates.push('shift = ?');
+    values.push(shift);
+  }
+  if (default_qty !== undefined) {
+    updates.push('default_qty = ?');
+    values.push(default_qty);
+  }
+
+  values.push(id); // customer_id
+
+  try {
+    const [result] = await pool.query(
+      `UPDATE Subscriptions SET ${updates.join(', ')} WHERE customer_id = ?`,
+      values
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Subscription not found' });
+    }
+
+    res.json({ message: 'Subscription updated' });
+  } catch (error) {
+    console.error('Error updating subscription:', error);
+    res.status(500).json({ error: 'Failed to update subscription' });
   }
 };

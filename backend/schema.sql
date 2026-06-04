@@ -115,3 +115,87 @@ INSERT INTO Products (name, unit, current_price) VALUES
   ('Toned Milk',      'litre', 55.00),
   ('Paneer',          'kg',    350.00),
   ('Curd',            'kg',    60.00);
+
+-- ============================================================
+-- 6. Idempotency_Keys  (dedup for offline-sync bulk inserts)
+--    Previously created at runtime in logController.js — now
+--    properly declared here in the DDL.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS Idempotency_Keys (
+  sync_id       VARCHAR(255)  PRIMARY KEY,
+  created_at    TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- ============================================================
+-- Performance indexes for billing & payment queries
+-- ============================================================
+CREATE INDEX idx_daily_logs_customer_date
+  ON Daily_Logs (customer_id, log_date);
+
+CREATE INDEX idx_payments_customer_date
+  ON Payments (customer_id, payment_date);
+
+-- ============================================================
+-- View: v_customer_balance
+-- Computes each customer's total billed, total paid, and
+-- pending amount.  This powers the diary-style payment ledger.
+--
+-- Usage:  SELECT * FROM v_customer_balance
+--         WHERE customer_id = ?;
+-- ============================================================
+CREATE OR REPLACE VIEW v_customer_balance AS
+SELECT
+  c.id              AS customer_id,
+  c.name            AS customer_name,
+  c.phone,
+  COALESCE(dl.total_billed, 0)  AS total_billed,
+  COALESCE(p.total_paid,   0)   AS total_paid,
+  COALESCE(dl.total_billed, 0)
+    - COALESCE(p.total_paid, 0) AS pending_amount
+FROM Customers c
+LEFT JOIN (
+  SELECT customer_id, SUM(total_charge) AS total_billed
+  FROM Daily_Logs
+  GROUP BY customer_id
+) dl ON dl.customer_id = c.id
+LEFT JOIN (
+  SELECT customer_id, SUM(amount) AS total_paid
+  FROM Payments
+  GROUP BY customer_id
+) p ON p.customer_id = c.id
+WHERE c.is_active = TRUE;
+
+-- ============================================================
+-- View: v_monthly_bill
+-- Aggregates Daily_Logs per customer per month, joins with
+-- Payments for the same period, and computes pending amounts.
+--
+-- Usage:  SELECT * FROM v_monthly_bill
+--         WHERE bill_month = '2026-06';
+-- ============================================================
+CREATE OR REPLACE VIEW v_monthly_bill AS
+SELECT
+  c.id                                    AS customer_id,
+  c.name                                  AS customer_name,
+  c.phone,
+  DATE_FORMAT(dl.log_date, '%Y-%m')       AS bill_month,
+  COUNT(dl.id)                            AS delivery_count,
+  SUM(dl.total_charge)                    AS total_billed,
+  COALESCE(p.total_paid, 0)              AS total_paid,
+  SUM(dl.total_charge)
+    - COALESCE(p.total_paid, 0)           AS pending_amount
+FROM Daily_Logs dl
+JOIN Customers c ON dl.customer_id = c.id
+LEFT JOIN (
+  SELECT
+    customer_id,
+    DATE_FORMAT(payment_date, '%Y-%m')    AS pay_month,
+    SUM(amount)                           AS total_paid
+  FROM Payments
+  GROUP BY customer_id, DATE_FORMAT(payment_date, '%Y-%m')
+) p ON p.customer_id = c.id
+     AND p.pay_month = DATE_FORMAT(dl.log_date, '%Y-%m')
+WHERE c.is_active = TRUE
+GROUP BY c.id, c.name, c.phone,
+         DATE_FORMAT(dl.log_date, '%Y-%m'),
+         p.total_paid;

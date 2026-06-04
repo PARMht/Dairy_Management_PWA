@@ -8,6 +8,7 @@ const routeRoutes    = require('./routes/route');
 const logRoutes      = require('./routes/logs');
 const paymentRoutes  = require('./routes/payments');
 const productRoutes  = require('./routes/products');
+const billingRoutes  = require('./routes/billing');
 
 // ── App init ─────────────────────────────────────────────────
 const app = express();
@@ -34,6 +35,7 @@ app.use('/api/route',     routeRoutes);
 app.use('/api/logs',      logRoutes);
 app.use('/api/payments',  paymentRoutes);
 app.use('/api/products',  productRoutes);
+app.use('/api/billing',   billingRoutes);
 
 // ── Global error handler ─────────────────────────────────────
 app.use((err, _req, res, _next) => {

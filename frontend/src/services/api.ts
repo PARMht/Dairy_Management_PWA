@@ -7,6 +7,15 @@ import type {
   BulkSubmitPayload,
   CreateCustomerPayload,
   CreatePaymentPayload,
+  CustomerBalance,
+  PaymentRecord,
+  CreateProductPayload,
+  UpdateProductPayload,
+  ToggleSubscriberPayload,
+  UpdateSubscriptionPayload,
+  LogHistoryResponse,
+  LogHistoryEntry,
+  MonthlyBillResponse,
 } from '../types';
 
 // ─── Base Axios instance ──────────────────────────────────────────────────────
@@ -99,5 +108,74 @@ export const createPayment = (
   payload: CreatePaymentPayload,
 ): Promise<AxiosResponse<{ payment_id: number }>> =>
   api.post<{ payment_id: number }>('/payments', payload);
+
+// ─── Payment endpoints (new) ──────────────────────────────────────────────────
+export const getCustomerBalance = (
+  customerId: number,
+): Promise<AxiosResponse<CustomerBalance>> =>
+  api.get<CustomerBalance>(`/payments/balance/${customerId}`);
+
+export const getPaymentsByCustomer = (
+  customerId: number,
+): Promise<AxiosResponse<PaymentRecord[]>> =>
+  api.get<PaymentRecord[]>(`/payments/${customerId}`);
+
+// ─── Product endpoints (new) ──────────────────────────────────────────────────
+export const createProduct = (
+  payload: CreateProductPayload,
+): Promise<AxiosResponse<{ product_id: number }>> =>
+  api.post<{ product_id: number }>('/products', payload);
+
+export const updateProduct = (
+  id: number,
+  payload: UpdateProductPayload,
+): Promise<AxiosResponse<{ message: string }>> =>
+  api.put<{ message: string }>(`/products/${id}`, payload);
+
+export const deactivateProduct = (
+  id: number,
+): Promise<AxiosResponse<{ message: string }>> =>
+  api.delete<{ message: string }>(`/products/${id}`);
+
+// ─── Customer management endpoints (new) ──────────────────────────────────────
+export const deactivateCustomer = (
+  id: number,
+): Promise<AxiosResponse<{ message: string }>> =>
+  api.delete<{ message: string }>(`/customers/${id}`);
+
+export const toggleSubscriberStatus = (
+  id: number,
+  payload: ToggleSubscriberPayload,
+): Promise<AxiosResponse<{ message: string }>> =>
+  api.patch<{ message: string }>(`/customers/${id}/toggle`, payload);
+
+export const updateSubscription = (
+  customerId: number,
+  payload: UpdateSubscriptionPayload,
+): Promise<AxiosResponse<{ message: string }>> =>
+  api.patch<{ message: string }>(`/customers/${customerId}/subscription`, payload);
+
+// ─── Log history endpoints (new) ──────────────────────────────────────────────
+export const getLogHistory = (
+  params: { page?: number; limit?: number; customer_id?: number; from?: string; to?: string },
+): Promise<AxiosResponse<LogHistoryResponse>> =>
+  api.get<LogHistoryResponse>('/logs', { params });
+
+export const updateLog = (
+  id: number,
+  payload: { quantity?: number; recorded_price?: number },
+): Promise<AxiosResponse<{ message: string; total_charge: number }>> =>
+  api.patch<{ message: string; total_charge: number }>(`/logs/${id}`, payload);
+
+// ─── Billing endpoints (new) ──────────────────────────────────────────────────
+export const getMonthlyBill = (
+  month: string,
+): Promise<AxiosResponse<MonthlyBillResponse>> =>
+  api.get<MonthlyBillResponse>(`/billing/${month}`);
+
+export const getCustomerLedger = (
+  customerId: number,
+): Promise<AxiosResponse<{ balance: CustomerBalance; logs: LogHistoryEntry[]; payments: PaymentRecord[] }>> =>
+  api.get(`/billing/customer/${customerId}`);
 
 export default api;

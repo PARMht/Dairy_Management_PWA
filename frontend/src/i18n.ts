@@ -1,9 +1,9 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import enTranslation from './locales/en/translation.json';
-import hiTranslation from './locales/hi/translation.json';
-import mrTranslation from './locales/mr/translation.json';
+import enTranslation from './locales/en/translation_en.json';
+import hiTranslation from './locales/hi/translation_hi.json';
+import mrTranslation from './locales/mr/translation_mr.json';
 
 // ─── i18next initialisation ───────────────────────────────────────────────────
 // Bundled resources are used instead of a backend plugin so the app works
