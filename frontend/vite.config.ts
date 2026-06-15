@@ -53,6 +53,11 @@ export default defineConfig({
           '**/*.{js,css,html}',         // compiled TSX/CSS bundles + index.html
         ],
 
+        // SPA navigation: serve index.html for client-side routes,
+        // but NEVER intercept /api/ calls — those must hit the network.
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/api\//],
+
         // Runtime caching for assets loaded outside the bundle graph
         runtimeCaching: [
           {

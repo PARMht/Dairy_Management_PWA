@@ -1,14 +1,15 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const pool = require('./config/db');
 
 // ── Route imports ────────────────────────────────────────────
 const customerRoutes = require('./routes/customers');
-const routeRoutes    = require('./routes/route');
-const logRoutes      = require('./routes/logs');
-const paymentRoutes  = require('./routes/payments');
-const productRoutes  = require('./routes/products');
-const billingRoutes  = require('./routes/billing');
+const routeRoutes = require('./routes/route');
+const logRoutes = require('./routes/logs');
+const paymentRoutes = require('./routes/payments');
+const productRoutes = require('./routes/products');
+const billingRoutes = require('./routes/billing');
 
 // ── App init ─────────────────────────────────────────────────
 const app = express();
@@ -31,11 +32,16 @@ app.get('/api/health', async (_req, res) => {
 
 // ── API routes ───────────────────────────────────────────────
 app.use('/api/customers', customerRoutes);
-app.use('/api/route',     routeRoutes);
-app.use('/api/logs',      logRoutes);
-app.use('/api/payments',  paymentRoutes);
-app.use('/api/products',  productRoutes);
-app.use('/api/billing',   billingRoutes);
+app.use('/api/route', routeRoutes);
+app.use('/api/logs', logRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/billing', billingRoutes);
+// ── Serve frontend build (for sharing via ngrok/tunnel) ─────
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
+});
 
 // ── Global error handler ─────────────────────────────────────
 app.use((err, _req, res, _next) => {

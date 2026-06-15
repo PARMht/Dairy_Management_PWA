@@ -21,9 +21,10 @@ import type {
 // ─── Base Axios instance ──────────────────────────────────────────────────────
 // Points to the Express backend. Change the base URL here once deployed.
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true',   // bypass ngrok free-tier interstitial
   },
 });
 
