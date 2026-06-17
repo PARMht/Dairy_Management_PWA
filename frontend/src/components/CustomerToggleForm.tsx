@@ -343,7 +343,13 @@ export default function CustomerToggleForm({ onSuccess }: CustomerToggleFormProp
 
       {/* ── Reactivation banner ──────────────────────────────────────────────── */}
       {mode === 'reactivation' && (
-        <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-amber-900/25 border border-amber-600/60 text-amber-300 text-xs mb-5">
+        <div className="flex items-start gap-3 px-4 py-3 rounded-xl border text-xs mb-5"
+          style={{
+            backgroundColor: 'var(--color-warning-bg)',
+            borderColor: 'var(--color-warning)',
+            color: 'var(--color-warning)',
+          }}
+        >
           <span className="text-base mt-0.5">⚠️</span>
           <span>
             <strong>{t('form.title_reactivate')}</strong>
@@ -355,12 +361,18 @@ export default function CustomerToggleForm({ onSuccess }: CustomerToggleFormProp
 
       {/* ── Success banner ───────────────────────────────────────────────────── */}
       {submitSuccess && (
-        <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-[var(--color-brand-700)]/25 border border-[var(--color-brand-600)] text-[var(--color-brand-100)] text-sm mb-5">
+        <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl border text-sm mb-5"
+          style={{
+            backgroundColor: 'var(--color-success-bg)',
+            borderColor: 'var(--color-brand-600)',
+            color: 'var(--color-success)',
+          }}
+        >
           <span>✅ {submitSuccess}</span>
           <button
             type="button"
             onClick={() => setSubmitSuccess(null)}
-            className="text-[var(--color-brand-400)] hover:text-white font-bold shrink-0"
+            className="hover:opacity-70 transition-opacity font-bold shrink-0"
           >
             ✕
           </button>
@@ -369,12 +381,18 @@ export default function CustomerToggleForm({ onSuccess }: CustomerToggleFormProp
 
       {/* ── Error banner ─────────────────────────────────────────────────────── */}
       {submitError && (
-        <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-red-900/25 border border-red-700 text-red-300 text-sm mb-5">
+        <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl border text-sm mb-5"
+          style={{
+            backgroundColor: 'var(--color-danger-bg)',
+            borderColor: 'var(--color-danger)',
+            color: 'var(--color-danger)',
+          }}
+        >
           <span>❌ {submitError}</span>
           <button
             type="button"
             onClick={() => setSubmitError(null)}
-            className="text-red-400 hover:text-white font-bold shrink-0"
+            className="hover:opacity-70 transition-opacity font-bold shrink-0"
           >
             ✕
           </button>
@@ -425,7 +443,7 @@ export default function CustomerToggleForm({ onSuccess }: CustomerToggleFormProp
                 className={
                   'absolute z-50 top-full mt-1.5 left-0 right-0 ' +
                   'rounded-xl bg-[var(--color-surface-2)] border border-[var(--color-surface-3)] ' +
-                  'shadow-xl shadow-black/40 overflow-hidden'
+                  'shadow-[0_4px_16px_var(--color-shadow-lg)] overflow-hidden'
                 }
               >
                 <li className="px-3.5 py-2 text-[10px] font-bold uppercase tracking-widest text-[var(--color-muted)] border-b border-[var(--color-surface-3)]">
@@ -449,7 +467,13 @@ export default function CustomerToggleForm({ onSuccess }: CustomerToggleFormProp
                         </p>
                         <p className="text-xs text-[var(--color-muted)]">{s.phone}</p>
                       </div>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-700/30 text-amber-300 border border-amber-600/40 shrink-0">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                  style={{
+                    backgroundColor: 'var(--color-warning-bg)',
+                    color: 'var(--color-warning)',
+                    border: '1px solid var(--color-warning)',
+                  }}
+                >
                         {t('form.badge_inactive')}
                       </span>
                     </button>
@@ -517,7 +541,7 @@ export default function CustomerToggleForm({ onSuccess }: CustomerToggleFormProp
                 {t('form.products_loading')}
               </p>
             ) : productsError ? (
-              <p className="text-xs text-red-400 py-2.5">
+              <p className="text-xs text-[var(--color-danger)] py-2.5">
                 {t('form.products_error')}
               </p>
             ) : (
@@ -613,11 +637,11 @@ export default function CustomerToggleForm({ onSuccess }: CustomerToggleFormProp
               type="submit"
               disabled={submitting || productsLoading}
               className={[
-                'flex-1 py-3 rounded-xl font-bold text-sm text-white transition-all',
-                'shadow-lg shadow-green-900/20 active:scale-[0.98]',
+                'flex-1 py-3 rounded-xl font-bold text-sm transition-all',
+                'shadow-[0_4px_12px_var(--color-shadow-lg)] active:scale-[0.98]',
                 mode === 'reactivation'
-                  ? 'bg-amber-600 hover:bg-amber-500 disabled:opacity-50'
-                  : 'bg-[var(--color-brand-600)] hover:bg-[var(--color-brand-500)] disabled:opacity-50',
+                  ? 'bg-[var(--color-warning)] hover:opacity-90 disabled:opacity-50 text-[var(--color-text)]'
+                  : 'bg-[var(--color-brand-600)] hover:bg-[var(--color-brand-500)] disabled:opacity-50 text-white',
                 'disabled:cursor-not-allowed',
               ].join(' ')}
             >

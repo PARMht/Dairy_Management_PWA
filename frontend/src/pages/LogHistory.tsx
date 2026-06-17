@@ -32,9 +32,9 @@ function firstOfMonth(): string {
 }
 
 const SHIFT_COLORS: Record<string, { bg: string; color: string }> = {
-  Morning:   { bg: 'rgba(245,158,11,0.15)',  color: '#f59e0b' },
-  Afternoon: { bg: 'rgba(59,130,246,0.15)',  color: '#60a5fa' },
-  Evening:   { bg: 'rgba(168,85,247,0.15)',  color: '#c084fc' },
+  Morning:   { bg: 'var(--color-warning-bg)',  color: 'var(--color-warning)' },
+  Afternoon: { bg: 'var(--color-info-bg)',     color: 'var(--color-info)' },
+  Evening:   { bg: 'var(--color-violet-bg)',   color: 'var(--color-violet)' },
 };
 
 // ─── Shared styles ────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ function LogCard({ entry, onSaved }: LogCardProps) {
   const shiftStyle =
     entry.shift && SHIFT_COLORS[entry.shift]
       ? SHIFT_COLORS[entry.shift]
-      : { bg: 'rgba(148,163,184,0.15)', color: 'var(--color-muted)' };
+      : { bg: 'var(--color-surface-3)', color: 'var(--color-muted)' };
 
   const handleSave = async () => {
     const parsedQty   = parseFloat(qty);
@@ -123,6 +123,7 @@ function LogCard({ entry, onSaved }: LogCardProps) {
         backgroundColor: 'var(--color-surface-2)',
         borderRadius: '0.875rem',
         border: '1px solid var(--color-surface-3)',
+        boxShadow: '0 2px 8px var(--color-shadow)',
         transition: 'all 0.15s',
         display: 'flex',
         flexDirection: 'column',
@@ -270,7 +271,7 @@ function LogCard({ entry, onSaved }: LogCardProps) {
           </div>
 
           {errMsg && (
-            <p style={{ fontSize: '0.8rem', color: '#f87171', margin: 0 }}>❌ {errMsg}</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-danger)', margin: 0 }}>❌ {errMsg}</p>
           )}
 
           <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -420,6 +421,7 @@ export default function LogHistory() {
   // ─── Render ─────────────────────────────────────────────────────────────────
   return (
     <section
+      className="page-enter"
       style={{
         maxWidth: '52rem',
         margin: '0 auto',

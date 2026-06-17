@@ -59,7 +59,7 @@ function ShiftTabs({ activeShift, onSelect }: ShiftTabsProps) {
           className={[
             'px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200',
             activeShift === shift
-              ? 'bg-[var(--color-brand-600)] text-white shadow-lg shadow-green-900/40'
+              ? 'bg-[var(--color-brand-600)] text-white shadow-[0_2px_8px_var(--color-shadow-lg)]'
               : 'text-[var(--color-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-3)]',
           ].join(' ')}
         >
@@ -74,7 +74,7 @@ function ShiftTabs({ activeShift, onSelect }: ShiftTabsProps) {
 function RouteRow({ entry, onQuantityChange }: RouteRowProps) {
   const { t } = useTranslation();
   return (
-    <div className="flex items-center justify-between gap-4 px-5 py-4 rounded-xl bg-[var(--color-surface-2)] border border-[var(--color-surface-3)] transition-all hover:border-[var(--color-brand-700)]">
+    <div className="flex items-center justify-between gap-4 px-5 py-4 rounded-xl bg-[var(--color-surface-2)] border border-[var(--color-surface-3)] transition-all hover:border-[var(--color-brand-700)] shadow-[0_2px_8px_var(--color-shadow)]">
       {/* Customer info */}
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-[var(--color-text)] truncate">{entry.name}</p>
@@ -115,7 +115,7 @@ function RouteRow({ entry, onQuantityChange }: RouteRowProps) {
           aria-label={`Reset quantity for ${entry.name} to default`}
           onClick={() => onQuantityChange(entry.customer_id, entry.default_qty)}
           title="Reset to default"
-          className="w-8 h-8 rounded-lg bg-[var(--color-surface-3)] text-[var(--color-muted)] text-xs flex items-center justify-center hover:text-white hover:bg-[var(--color-surface-3)] transition-colors"
+          className="w-8 h-8 rounded-lg bg-[var(--color-surface-3)] text-[var(--color-muted)] text-xs flex items-center justify-center hover:text-[var(--color-text)] hover:bg-[var(--color-brand-100)] transition-colors"
         >
           ↺
         </button>
@@ -139,9 +139,9 @@ function RouteRow({ entry, onQuantityChange }: RouteRowProps) {
  */
 function StatusBanner({ message, variant, onDismiss }: StatusBannerProps) {
   const colours = {
-    success: 'bg-[var(--color-brand-700)]/30 border-[var(--color-brand-600)] text-[var(--color-brand-100)]',
-    offline: 'bg-amber-900/30 border-amber-600 text-amber-200',
-    error:   'bg-red-900/30 border-red-700 text-red-200',
+    success: 'bg-[var(--color-success-bg)] border-[var(--color-brand-600)] text-[var(--color-success)]',
+    offline: 'bg-[var(--color-warning-bg)] border-[var(--color-warning)] text-[var(--color-warning)]',
+    error:   'bg-[var(--color-danger-bg)] border-[var(--color-danger)] text-[var(--color-danger)]',
   } as const;
 
   const icons = { success: '✅', offline: '📶', error: '❌' } as const;
@@ -153,7 +153,7 @@ function StatusBanner({ message, variant, onDismiss }: StatusBannerProps) {
       <span className="font-medium">{icons[variant]} {message}</span>
       <button
         onClick={onDismiss}
-        className="hover:text-white transition-colors font-bold shrink-0"
+        className="hover:opacity-70 transition-opacity font-bold shrink-0"
       >
         ✕
       </button>
@@ -364,7 +364,7 @@ export default function DailyRoute() {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <section className="max-w-3xl mx-auto px-4 py-8">
+    <section className="page-enter max-w-3xl mx-auto px-4 py-8">
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text)]">
@@ -423,7 +423,7 @@ export default function DailyRoute() {
 
       {/* Footer: shift total + confirm button */}
       {routeEntries.length > 0 && !loading && (
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-[var(--color-surface-2)] border border-[var(--color-surface-3)]">
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-[var(--color-surface-2)] border border-[var(--color-surface-3)] shadow-[0_2px_8px_var(--color-shadow)]">
           <div>
             <p className="text-xs text-[var(--color-muted)] uppercase tracking-widest">
               {t('route.label_shift_total')}
@@ -437,7 +437,7 @@ export default function DailyRoute() {
             id="confirm-shift-btn"
             onClick={() => void handleConfirmShift()}
             disabled={submitting}
-            className="px-8 py-3 rounded-xl font-bold text-white bg-[var(--color-brand-600)] hover:bg-[var(--color-brand-500)] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-green-900/30 active:scale-95"
+            className="px-8 py-3 rounded-xl font-bold text-white bg-[var(--color-brand-600)] hover:bg-[var(--color-brand-500)] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[0_4px_12px_var(--color-shadow-lg)] active:scale-95"
           >
             {submitting
               ? t('route.btn_logging')

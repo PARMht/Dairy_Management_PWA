@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
+import Dashboard from './pages/Dashboard';
 import DailyRoute from './pages/DailyRoute';
 import CustomerManagement from './pages/CustomerManagement';
 import PaymentsDashboard from './pages/PaymentsDashboard';
@@ -11,7 +12,8 @@ import MonthlyBilling from './pages/MonthlyBilling';
 // ─── Route tree ───────────────────────────────────────────────────────────────
 //
 //  /                   → AppLayout (persistent shell)
-//  ├─ index            → DailyRoute
+//  ├─ index            → Dashboard (NEW home page)
+//  ├─ /route           → DailyRoute (MOVED from index)
 //  ├─ /customers       → CustomerManagement
 //  ├─ /payments        → PaymentsDashboard
 //  ├─ /products        → ProductManagement
@@ -29,7 +31,11 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        index: true,                    // matches "/" exactly
+        index: true,                    // matches "/" exactly → Dashboard
+        element: <Dashboard />,
+      },
+      {
+        path: 'route',                  // matches "/route" → DailyRoute
         element: <DailyRoute />,
       },
       {

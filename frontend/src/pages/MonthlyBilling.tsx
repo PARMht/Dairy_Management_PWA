@@ -39,8 +39,8 @@ function SummaryBar({ billed, paid, pending }: SummaryBarProps) {
 
   const stats = [
     { label: t('billing.grand_total'),   value: billed,  color: 'var(--color-brand-400)' },
-    { label: t('billing.grand_paid'),    value: paid,    color: '#34d399' },
-    { label: t('billing.grand_pending'), value: pending, color: '#f59e0b' },
+    { label: t('billing.grand_paid'),    value: paid,    color: 'var(--color-success)' },
+    { label: t('billing.grand_pending'), value: pending, color: 'var(--color-warning)' },
   ];
 
   return (
@@ -53,6 +53,7 @@ function SummaryBar({ billed, paid, pending }: SummaryBarProps) {
         backgroundColor: 'var(--color-surface-2)',
         borderRadius: '1rem',
         border: '1px solid var(--color-surface-3)',
+        boxShadow: '0 2px 8px var(--color-shadow)',
         marginBottom: '1.5rem',
       }}
     >
@@ -109,7 +110,7 @@ function BillCard({ entry, monthLabel: mLabel }: BillCardProps) {
   };
 
   const pendingColor =
-    Number(entry.pending_amount) > 0 ? '#f59e0b' : 'var(--color-brand-400)';
+    Number(entry.pending_amount) > 0 ? 'var(--color-warning)' : 'var(--color-brand-400)';
 
   return (
     <div
@@ -118,6 +119,7 @@ function BillCard({ entry, monthLabel: mLabel }: BillCardProps) {
         backgroundColor: 'var(--color-surface-2)',
         borderRadius: '0.875rem',
         border: '1px solid var(--color-surface-3)',
+        boxShadow: '0 2px 8px var(--color-shadow)',
         display: 'flex',
         flexDirection: 'column',
         gap: '0.875rem',
@@ -157,7 +159,7 @@ function BillCard({ entry, monthLabel: mLabel }: BillCardProps) {
             borderRadius: '9999px',
             fontSize: '0.7rem',
             fontWeight: 700,
-            backgroundColor: 'rgba(148,163,184,0.12)',
+            backgroundColor: 'var(--color-brand-50)',
             color: 'var(--color-muted)',
             whiteSpace: 'nowrap',
           }}
@@ -206,7 +208,7 @@ function BillCard({ entry, monthLabel: mLabel }: BillCardProps) {
           >
             {t('billing.total_paid')}
           </p>
-          <p style={{ fontWeight: 700, fontSize: '0.9rem', color: '#34d399' }}>
+          <p style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--color-success)' }}>
             {fmt(entry.total_paid)}
           </p>
         </div>
@@ -324,6 +326,7 @@ export default function MonthlyBilling() {
   // ─── Render ─────────────────────────────────────────────────────────────────
   return (
     <section
+      className="page-enter"
       style={{
         maxWidth: '52rem',
         margin: '0 auto',
@@ -412,9 +415,9 @@ export default function MonthlyBilling() {
           style={{
             padding: '0.875rem 1.25rem',
             borderRadius: '0.75rem',
-            border: '1px solid #ef4444',
-            backgroundColor: 'rgba(239,68,68,0.1)',
-            color: '#fca5a5',
+            border: '1px solid var(--color-danger)',
+            backgroundColor: 'var(--color-danger-bg)',
+            color: 'var(--color-danger)',
             marginBottom: '1.25rem',
             fontSize: '0.875rem',
             fontWeight: 600,

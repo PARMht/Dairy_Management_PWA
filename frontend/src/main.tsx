@@ -34,3 +34,17 @@ createRoot(rootElement).render(
     <App />
   </StrictMode>,
 );
+
+// ── Splash dismissal ─────────────────────────────────────
+// Total splash animation: 1.8s pour + 0.8s brand reveal = 2.6s
+// We wait 3s (pour + brand reveal + 0.4s pause), then fade out.
+const splash = document.getElementById('splash');
+if (splash) {
+  setTimeout(() => {
+    splash.classList.add('fade-out');
+    setTimeout(() => {
+      splash.remove();
+      sessionStorage.setItem('splash_shown', '1');
+    }, 500); // matches splashFadeOut duration
+  }, 3000);
+}

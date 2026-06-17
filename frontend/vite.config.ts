@@ -19,15 +19,15 @@ export default defineConfig({
 
       // ── App Manifest ──────────────────────────────────────
       manifest: {
-        name: 'Dairy Farm Manager',
+        name: 'Dairy Manager',
         short_name: 'DairyMgr',
         description:
           'Offline-first dairy route management, billing & ledger app.',
         start_url: '/',
         display: 'standalone',
         orientation: 'portrait',
-        theme_color: '#0f172a',       // --color-surface
-        background_color: '#0f172a',  // --color-surface
+        theme_color: '#FFF8F0',       // --color-surface (cream)
+        background_color: '#FFF8F0',  // --color-surface (cream)
         icons: [
           {
             src: 'favicon.svg',

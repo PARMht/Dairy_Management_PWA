@@ -207,8 +207,8 @@ function CustomerRow({
   const [subSaving, setSubSaving]       = useState(false);
 
   const badge = customer.is_subscriber
-    ? { label: t('subscribers.badge_subscriber'), bg: 'rgba(34,197,94,0.15)', color: 'var(--color-brand-400)' }
-    : { label: t('subscribers.badge_khata'),      bg: 'rgba(245,158,11,0.12)', color: '#f59e0b' };
+    ? { label: t('subscribers.badge_subscriber'), bg: 'var(--color-success-bg)', color: 'var(--color-success)' }
+    : { label: t('subscribers.badge_khata'),      bg: 'var(--color-warning-bg)', color: 'var(--color-warning)' };
 
   const handleEditSave = async (payload: UpdateSubscriptionPayload) => {
     setSubSaving(true);
@@ -224,6 +224,7 @@ function CustomerRow({
         backgroundColor: 'var(--color-surface-2)',
         borderRadius: '0.875rem',
         border: '1px solid var(--color-surface-3)',
+        boxShadow: '0 2px 8px var(--color-shadow)',
         transition: 'all 0.15s',
       }}
     >
@@ -326,10 +327,10 @@ function CustomerRow({
             borderRadius: '0.5rem',
             fontWeight: 600,
             fontSize: '0.75rem',
-            border: '1px solid rgba(239,68,68,0.3)',
+            border: '1px solid var(--color-danger)',
             cursor: 'pointer',
-            backgroundColor: 'rgba(239,68,68,0.08)',
-            color: '#f87171',
+            backgroundColor: 'var(--color-danger-bg)',
+            color: 'var(--color-danger)',
             transition: 'all 0.15s',
             marginLeft: 'auto',
           }}
@@ -438,6 +439,7 @@ export default function SubscriberManagement() {
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
     <section
+      className="page-enter"
       style={{
         maxWidth: '52rem',
         margin: '0 auto',
@@ -500,9 +502,9 @@ export default function SubscriberManagement() {
           style={{
             padding: '0.875rem 1.25rem',
             borderRadius: '0.75rem',
-            border: `1px solid ${banner.ok ? 'var(--color-brand-600)' : '#ef4444'}`,
-            backgroundColor: banner.ok ? 'rgba(22,163,74,0.1)' : 'rgba(239,68,68,0.1)',
-            color: banner.ok ? 'var(--color-brand-100)' : '#fca5a5',
+            border: `1px solid ${banner.ok ? 'var(--color-brand-600)' : 'var(--color-danger)'}`,
+            backgroundColor: banner.ok ? 'var(--color-success-bg)' : 'var(--color-danger-bg)',
+            color: banner.ok ? 'var(--color-success)' : 'var(--color-danger)',
             marginBottom: '1.25rem',
             fontSize: '0.875rem',
             fontWeight: 600,
@@ -519,7 +521,7 @@ export default function SubscriberManagement() {
             padding: '1.125rem 1.375rem',
             backgroundColor: 'var(--color-surface-2)',
             borderRadius: '0.875rem',
-            border: '1px solid rgba(239,68,68,0.4)',
+            border: '1px solid var(--color-danger)',
             marginBottom: '1.5rem',
             display: 'flex',
             alignItems: 'center',
@@ -548,7 +550,7 @@ export default function SubscriberManagement() {
                 fontSize: '0.8rem',
                 border: 'none',
                 cursor: 'pointer',
-                backgroundColor: '#ef4444',
+                backgroundColor: 'var(--color-danger)',
                 color: '#ffffff',
                 transition: 'all 0.15s',
               }}

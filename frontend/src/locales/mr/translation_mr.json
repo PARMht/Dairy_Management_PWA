@@ -57,7 +57,27 @@
     "subscribers":      "सदस्य",
     "log_history":      "इतिहास",
     "billing":          "बिलिंग",
-    "language":         "भाषा"
+    "language":         "भाषा",
+    "home":             "मुख्यपृष्ठ",
+    "more":             "अधिक"
+  },
+  "dashboard": {
+    "greeting_morning":        "सुप्रभात!",
+    "greeting_afternoon":      "नमस्कार!",
+    "greeting_evening":        "शुभ संध्याकाळ!",
+    "today_deliveries":        "आजच्या वितरणा",
+    "pending_balance":         "प्रलंबित शिल्लक",
+    "monthly_billed":          "या महिन्याचे बिल",
+    "active_customers":        "सक्रिय ग्राहक",
+    "subscribers_count":       "{{count}} सदस्य",
+    "khata_count":             "{{count}} खाता",
+    "pending_amount":          "₹{{amount}} प्रलंबित",
+    "quick_actions":           "जलद कृती",
+    "action_start_route":      "सकाळचा मार्ग सुरू करा",
+    "action_record_payment":   "पेमेंट नोंदवा",
+    "action_add_customer":     "ग्राहक जोडा",
+    "status_online":           "ऑनलाइन",
+    "status_offline":          "ऑफलाइन"
   },
   "payments": {
     "page_title":       "पेमेंट खातेवही",

@@ -1,29 +1,64 @@
 @import "tailwindcss";
 
-/* ─── Design Tokens ─────────────────────────────────────── */
+/* ─── Design Tokens: Light Dairy Theme (Cocoa + Cream) ──── */
 :root {
-  --color-brand-50:  #f0fdf4;
-  --color-brand-100: #dcfce7;
-  --color-brand-400: #4ade80;
-  --color-brand-500: #22c55e;
-  --color-brand-600: #16a34a;
-  --color-brand-700: #15803d;
+  /* Brand — Dark Cocoa */
+  --color-brand-50:  #FDF6EE;
+  --color-brand-100: #F0E4D4;
+  --color-brand-200: #E0C9A8;
+  --color-brand-300: #C4A07A;
+  --color-brand-400: #A67B5B;
+  --color-brand-500: #8B5A3C;
+  --color-brand-600: #6B3A1F;
+  --color-brand-700: #4A2C17;
 
-  --color-surface:   #0f172a;
-  --color-surface-2: #1e293b;
-  --color-surface-3: #334155;
-  --color-text:      #f1f5f9;
-  --color-muted:     #94a3b8;
+  /* Surfaces — Cream & White */
+  --color-surface:   #FFF8F0;
+  --color-surface-2: #FFFFFF;
+  --color-surface-3: #F0E6D6;
+
+  /* Text */
+  --color-text:      #2C3335;
+  --color-muted:     #8B7E74;
+
+  /* Semantic */
+  --color-success:    #16A34A;
+  --color-success-bg: #F0FDF4;
+  --color-danger:     #DC2626;
+  --color-danger-bg:  #FEF2F2;
+  --color-warning:    #D97706;
+  --color-warning-bg: #FFFBEB;
+
+  /* Shift badges — semantic colors for morning/afternoon/evening */
+  --color-info:       #2563EB;
+  --color-info-bg:    rgba(37, 99, 235, 0.10);
+  --color-violet:     #7C3AED;
+  --color-violet-bg:  rgba(124, 58, 237, 0.10);
+
+  /* On-brand text (for white text on brand/danger backgrounds) */
+  --color-on-brand:   #ffffff;
+
+  /* Utility */
+  --color-shadow:    rgba(139, 90, 60, 0.06);
+  --color-shadow-lg: rgba(139, 90, 60, 0.12);
+  --color-overlay:   rgba(44, 51, 53, 0.4);
+  --color-cream:     #FFF8F0;
+}
+
+/* ─── Global: Mobile Swipe Fix + Base ────────────────────── */
+html, body, #root {
+  overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 body {
   background-color: var(--color-surface);
   color: var(--color-text);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fredoka', system-ui, sans-serif;
   min-height: 100dvh;
 }
 
-/* Hide browser default number input spinners */
+/* ─── Hide browser number-input spinners ─────────────────── */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -31,4 +66,93 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* ─── Utility: Hide scrollbar (carousel / horizontal scroll) ─── */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Page Entry Transition ──────────────────────────────── */
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: pageEnter 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ─── Bottom Tab Micro-Animations ───────────────────────── */
+
+@keyframes tabBounce {
+  0%, 100% { transform: translateY(0); }
+  40%       { transform: translateY(-5px); }
+  65%       { transform: translateY(2px); }
+}
+
+@keyframes tabTipPour {
+  0%, 100% { transform: rotate(0deg); }
+  30%      { transform: rotate(-20deg); }
+  65%      { transform: rotate(4deg); }
+}
+
+@keyframes tabShake {
+  0%, 100% { transform: rotate(0deg); }
+  20%      { transform: rotate(9deg); }
+  40%      { transform: rotate(-9deg); }
+  60%      { transform: rotate(5deg); }
+  80%      { transform: rotate(-3deg); }
+}
+
+@keyframes tabSlideUp {
+  0%, 100% { transform: translateY(0);    opacity: 1; }
+  40%       { transform: translateY(-6px); opacity: 0.7; }
+  70%       { transform: translateY(1px);  opacity: 1; }
+}
+
+@keyframes tabRotateDots {
+  from { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(45deg) scale(1.2); }
+  to   { transform: rotate(90deg) scale(1); }
+}
+
+/* Applied via className on bottom tab buttons */
+.tab-home:active     .tab-icon { animation: tabBounce    0.40s ease; }
+.tab-route:active    .tab-icon { animation: tabTipPour   0.50s ease; }
+.tab-payments:active .tab-icon { animation: tabShake     0.40s ease; }
+.tab-billing:active  .tab-icon { animation: tabSlideUp   0.40s ease; }
+.tab-more:active     .tab-icon { animation: tabRotateDots 0.30s ease; }
+
+/* ─── Card Press Effect ──────────────────────────────────── */
+
+.card-interactive {
+  transition: box-shadow 0.18s ease, transform 0.12s ease;
+  cursor: pointer;
+}
+.card-interactive:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 4px var(--color-shadow) !important;
+}
+
+/* ─── Reduced Motion Overrides ───────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .tab-home:active     .tab-icon,
+  .tab-route:active    .tab-icon,
+  .tab-payments:active .tab-icon,
+  .tab-billing:active  .tab-icon,
+  .tab-more:active     .tab-icon,
+  .card-interactive {
+    animation: none !important;
+    transition: none !important;
+  }
 }

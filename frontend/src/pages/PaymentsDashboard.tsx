@@ -89,6 +89,7 @@ function PaymentCard({ payment }: PaymentCardProps) {
         backgroundColor: 'var(--color-surface-2)',
         borderRadius: '0.75rem',
         border: '1px solid var(--color-surface-3)',
+        boxShadow: '0 2px 8px var(--color-shadow)',
         transition: 'all 0.15s',
       }}
     >
@@ -260,6 +261,7 @@ export default function PaymentsDashboard() {
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
     <section
+      className="page-enter"
       style={{
         maxWidth: '48rem',
         margin: '0 auto',
@@ -313,9 +315,9 @@ export default function PaymentsDashboard() {
             gap: '1rem',
             padding: '0.875rem 1.25rem',
             borderRadius: '0.75rem',
-            border: `1px solid ${banner.ok ? 'var(--color-brand-600)' : '#ef4444'}`,
-            backgroundColor: banner.ok ? 'rgba(22,163,74,0.1)' : 'rgba(239,68,68,0.1)',
-            color: banner.ok ? 'var(--color-brand-100)' : '#fca5a5',
+            border: `1px solid ${banner.ok ? 'var(--color-brand-600)' : 'var(--color-danger)'}`,
+            backgroundColor: banner.ok ? 'var(--color-success-bg)' : 'var(--color-danger-bg)',
+            color: banner.ok ? 'var(--color-success)' : 'var(--color-danger)',
             marginBottom: '1.25rem',
             fontSize: '0.875rem',
             fontWeight: 600,
@@ -352,6 +354,7 @@ export default function PaymentsDashboard() {
               backgroundColor: 'var(--color-surface-2)',
               borderRadius: '1rem',
               border: '1px solid var(--color-surface-3)',
+              boxShadow: '0 2px 8px var(--color-shadow)',
               marginBottom: '1.5rem',
               flexWrap: 'wrap',
             }}
@@ -386,7 +389,7 @@ export default function PaymentsDashboard() {
                       fontWeight: 900,
                       color:
                         Number(balance.pending_amount) > 0
-                          ? '#f59e0b'
+                          ? 'var(--color-warning)'
                           : 'var(--color-brand-400)',
                       letterSpacing: '-0.02em',
                     }}
@@ -437,6 +440,7 @@ export default function PaymentsDashboard() {
               backgroundColor: 'var(--color-surface-2)',
               borderRadius: '1rem',
               border: '1px solid var(--color-surface-3)',
+              boxShadow: '0 2px 8px var(--color-shadow)',
               marginBottom: '1.5rem',
             }}
           >

@@ -57,7 +57,27 @@
     "subscribers":      "सदस्य",
     "log_history":      "इतिहास",
     "billing":          "बिलिंग",
-    "language":         "भाषा"
+    "language":         "भाषा",
+    "home":             "होम",
+    "more":             "और"
+  },
+  "dashboard": {
+    "greeting_morning":        "सुप्रभात!",
+    "greeting_afternoon":      "नमस्कार!",
+    "greeting_evening":        "शुभ संध्या!",
+    "today_deliveries":        "आज की डिलीवरी",
+    "pending_balance":         "लंबित शेष",
+    "monthly_billed":          "इस माह का बिल",
+    "active_customers":        "सक्रिय ग्राहक",
+    "subscribers_count":       "{{count}} सदस्य",
+    "khata_count":             "{{count}} खाता",
+    "pending_amount":          "₹{{amount}} लंबित",
+    "quick_actions":           "त्वरित कार्रवाई",
+    "action_start_route":      "सुबह का मार्ग शुरू करें",
+    "action_record_payment":   "भुगतान दर्ज करें",
+    "action_add_customer":     "ग्राहक जोड़ें",
+    "status_online":           "ऑनलाइन",
+    "status_offline":          "ऑफ़लाइन"
   },
   "payments": {
     "page_title":       "भुगतान बही",

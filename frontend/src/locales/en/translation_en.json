@@ -57,7 +57,27 @@
     "subscribers":      "Subscribers",
     "log_history":      "History",
     "billing":          "Billing",
-    "language":         "Language"
+    "language":         "Language",
+    "home":             "Home",
+    "more":             "More"
+  },
+  "dashboard": {
+    "greeting_morning":        "Good Morning!",
+    "greeting_afternoon":      "Good Afternoon!",
+    "greeting_evening":        "Good Evening!",
+    "today_deliveries":        "Today's Deliveries",
+    "pending_balance":         "Pending Balance",
+    "monthly_billed":          "This Month's Billed",
+    "active_customers":        "Active Customers",
+    "subscribers_count":       "{{count}} Subscribers",
+    "khata_count":             "{{count}} Khata",
+    "pending_amount":          "₹{{amount}} pending",
+    "quick_actions":           "Quick Actions",
+    "action_start_route":      "Start Morning Route",
+    "action_record_payment":   "Record Payment",
+    "action_add_customer":     "Add Customer",
+    "status_online":           "Online",
+    "status_offline":          "Offline"
   },
   "payments": {
     "page_title":       "Payments Ledger",

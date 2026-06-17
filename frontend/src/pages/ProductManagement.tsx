@@ -35,6 +35,7 @@ function ProductCard({ product, onEdit, onDeactivate }: ProductCardProps) {
         backgroundColor: 'var(--color-surface-2)',
         borderRadius: '0.875rem',
         border: '1px solid var(--color-surface-3)',
+        boxShadow: '0 2px 8px var(--color-shadow)',
         display: 'flex',
         flexDirection: 'column',
         gap: '0.875rem',
@@ -95,10 +96,10 @@ function ProductCard({ product, onEdit, onDeactivate }: ProductCardProps) {
             borderRadius: '0.5rem',
             fontWeight: 600,
             fontSize: '0.8rem',
-            border: '1px solid rgba(239,68,68,0.3)',
+            border: '1px solid var(--color-danger)',
             cursor: 'pointer',
-            backgroundColor: 'rgba(239,68,68,0.08)',
-            color: '#f87171',
+            backgroundColor: 'var(--color-danger-bg)',
+            color: 'var(--color-danger)',
             transition: 'all 0.15s',
           }}
         >
@@ -451,6 +452,7 @@ export default function ProductManagement() {
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
     <section
+      className="page-enter"
       style={{
         maxWidth: '56rem',
         margin: '0 auto',
@@ -513,9 +515,9 @@ export default function ProductManagement() {
           style={{
             padding: '0.875rem 1.25rem',
             borderRadius: '0.75rem',
-            border: `1px solid ${banner.ok ? 'var(--color-brand-600)' : '#ef4444'}`,
-            backgroundColor: banner.ok ? 'rgba(22,163,74,0.1)' : 'rgba(239,68,68,0.1)',
-            color: banner.ok ? 'var(--color-brand-100)' : '#fca5a5',
+            border: `1px solid ${banner.ok ? 'var(--color-brand-600)' : 'var(--color-danger)'}`,
+            backgroundColor: banner.ok ? 'var(--color-success-bg)' : 'var(--color-danger-bg)',
+            color: banner.ok ? 'var(--color-success)' : 'var(--color-danger)',
             marginBottom: '1.25rem',
             fontSize: '0.875rem',
             fontWeight: 600,
@@ -550,7 +552,7 @@ export default function ProductManagement() {
             padding: '1.25rem 1.5rem',
             backgroundColor: 'var(--color-surface-2)',
             borderRadius: '0.875rem',
-            border: '1px solid rgba(239,68,68,0.4)',
+            border: '1px solid var(--color-danger)',
             marginBottom: '1.5rem',
             display: 'flex',
             alignItems: 'center',
@@ -579,7 +581,7 @@ export default function ProductManagement() {
                 fontSize: '0.8rem',
                 border: 'none',
                 cursor: 'pointer',
-                backgroundColor: '#ef4444',
+                backgroundColor: 'var(--color-danger)',
                 color: '#ffffff',
                 transition: 'all 0.15s',
               }}
